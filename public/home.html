@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KeyGen - Home</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=FatFrank&family=Poppins:wght@800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Home Page -->
+  <section id="generate-key" class="section">
+    <h1 class="title">Generate Key</h1>
+    <button id="generate-btn" class="btn">Generate Key</button>
+    <p id="total-keys" class="total-keys">Total Keys: 0</p>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const generateBtn = document.getElementById("generate-btn");
+      const totalKeysDisplay = document.getElementById("total-keys");
+
+      // Fetch total keys from the backend (correct URL)
+      fetch("http://localhost:3000/getTotalKeys")
+        .then(response => response.json())
+        .then(data => {
+          totalKeysDisplay.textContent = `Total Keys: ${data.total}`;
+        })
+        .catch(err => console.error("Error fetching total keys:", err));
+
+      // Handle Generate Key button click
+      generateBtn.addEventListener("click", () => {
+        fetch("http://localhost:3000/generateKey", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Redirect to copy-key page with the key as a query parameter
+            window.location.href = `/public/copy-key.html?key=${data.key}`;
+          } else {
+            // Alert the user that they cannot generate a new key yet
+            alert(data.message || "Failed to generate key.");
+          }
+        })
+        .catch(error => {
+          alert(error.message);
+          console.error("Error:", error);
+        });
+      });
+    });
+  </script>  
+</body>
+</html>

@@ -1,0 +1,239 @@
+/* public/styles.css */
+
+/* General Styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #121212;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #1e1e1e;
+  border-bottom: 2px solid red;
+  padding: 1rem;
+  text-align: center;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin: 0 1rem;
+  font-size: 1.2rem;
+}
+
+.navbar a:hover {
+  color: red;
+}
+
+/* Sections */
+.section {
+  flex: 1;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.title {
+  font-family: 'FatFrank', sans-serif;
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+.description {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  background-color: red;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0.5rem;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background-color: #cc0000;
+}
+
+.copy-button {
+  background-color: red;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background-color: #cc0000;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Key Display */
+.key-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.key-box {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  background-color: #1e1e1e;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid red;
+  border-radius: 5px;
+}
+
+/* Key Expiry */
+.key-expiry {
+  color: #aaa;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+/* Total Keys */
+.total-keys {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  position: fixed; /* Sticks the element to a specific spot relative to the viewport */
+  bottom: 1rem; /* Distance from the bottom of the screen */
+  left: 1rem; /* Distance from the left of the screen */
+  margin: 0; /* Resets default margins */
+}
+
+/* Dashboard Styles */
+#dashboard-container {
+  width: 80%;  /* Increase the width */
+  max-width: 1200px;  /* Set a max width for large screens */
+  margin: 0 auto;  /* Center the dashboard */
+  padding: 20px;
+  background-color: #000000;  /* Optional background color */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Optional shadow for aesthetics */
+}
+
+.dashboard-heading {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.dashboard-table {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #333;
+}
+
+.table-header {
+  font-weight: bold;
+  border-bottom: 2px solid red;
+}
+
+.status {
+  text-transform: uppercase;
+  width: 60px;  /* Set the fixed width */
+  height: 20px;  /* Set the fixed height */
+  text-align: center;  /* Align text to the center horizontally */
+  line-height: 20px;  /* Center the text vertically inside the box */
+  padding: 0;  /* Remove any additional padding */
+  display: inline-block;  /* Make sure the element doesn't stretch */
+  margin-top: 20px;
+}
+
+
+.key-icon {
+  margin-right: 0.5rem;
+}
+
+.renew:hover {
+  background-color: #0055cc;
+}
+
+.delete:hover {
+  background-color: #cc0000;
+}
+
+.add-key {
+  background-color: red;
+  font-size: 1.2rem;
+}
+
+.add-key:hover {
+  background-color: #cc0000;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .table-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-row > div {
+    margin-bottom: 0.5rem;
+  }
+
+  .navbar a {
+    display: block;
+    margin: 0.5rem 0;
+  }
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  left: 50%;
+  text-align: center;
+  display: inline-block;
+}
+
+.status.expired {
+  background-color: orange;
+  color: white;
+}
+
+.status.active {
+  background-color: #4CAF50; /* Light dark green */
+  color: white;
+}
+
+.btn.renew {
+  background-color: #07a8ff;
+}
+
+.btn.delete {
+  background-color: red;
+}

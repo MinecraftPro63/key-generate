@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KeyGen - Your Key</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=FatFrank&family=Poppins:wght@800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Copy Key Section -->
+  <section id="copy-key" class="section">
+    <h1 class="title">Your Key</h1>
+    <div id="key-display" class="key-display">
+      <span id="key-box" class="key-box">Loading...</span>
+      <button id="copy-btn" class="copy-button">COPY</button>
+    </div>
+    <p id="key-expiry" class="key-expiry">Loading expiration...</p>
+    <p><a href="dashboard.html" class="btn">Go to Dashboard</a></p>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const keyBox = document.getElementById("key-box");
+      const copyBtn = document.getElementById("copy-btn");
+      const keyExpiry = document.getElementById("key-expiry");
+  
+      // Extract the key from the URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const key = urlParams.get("key");
+  
+      if (key) {
+        // Display the key directly in the box
+        keyBox.textContent = key;
+  
+        try {
+          // Fetch the key validation from the Express server
+          const response = await fetch(`http://localhost:3000/copy-key?key=${key}`);
+          
+          if (!response.ok) {
+            // If key not found, redirect to home.html
+            console.error("Key not found");
+            window.location.href = "home.html";
+            return;
+          }
+  
+          // If key is valid, continue here
+          const data = await response.json();
+  
+          // The key is inside the returned object as data.key
+          const validKey = data.key.key; // Extract the 'key' value from the object
+  
+          // Ensure the valid key is a string (it should be a string based on your API response)
+          if (typeof validKey === 'string') {
+            keyBox.textContent = validKey;
+          } else {
+            console.error("Key is not a valid string:", validKey);
+            keyBox.textContent = "Invalid key format!";
+            return;
+          }
+  
+          // Handle the "COPY" button functionality
+          copyBtn.addEventListener("click", () => {
+            navigator.clipboard.writeText(validKey)
+              .then(() => alert("Key copied to clipboard!"))
+              .catch((err) => console.error("Copy error:", err));
+          });
+  
+          // Expiration timer for the valid key
+          const expirationTime = data.key.expiresAt - Date.now(); // Time until expiration
+          if (expirationTime <= 0) {
+            keyExpiry.textContent = "This key has expired.";
+            keyBox.style.textDecoration = "line-through";
+          } else {
+            // Format the expiration time
+            let timeRemaining = expirationTime;
+            setInterval(() => {
+              timeRemaining -= 1000; // Decrease by 1 second
+              if (timeRemaining <= 0) {
+                keyExpiry.textContent = "This key has expired.";
+                keyBox.style.textDecoration = "line-through";
+              } else {
+                const hours = Math.floor(timeRemaining / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                let timeString = '';
+                if (hours > 0) {
+                  timeString = `${hours}h ${minutes}m`;
+                } else if (minutes > 0) {
+                  timeString = `${minutes}m ${seconds}s`;
+                } else {
+                  timeString = `${seconds}s`;
+                }
+
+                keyExpiry.textContent = `Expires in ${timeString}`;
+              }
+            }, 1000);
+          }
+  
+        } catch (err) {
+          console.error("Error validating or creating the key:", err);
+          setTimeout(() => {
+            window.location.href = "home.html";
+          }, 1000);
+        }
+      } else {
+        keyBox.textContent = "No key found!";
+        copyBtn.disabled = true;
+      }
+    });
+  </script>  
+</body>
+</html>

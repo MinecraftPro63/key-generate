@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KeyGen - Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=FatFrank&family=Poppins:wght@800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="home.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+
+  <!-- Dashboard Section -->
+  <section id="dashboard" class="section">
+    <h1 class="title">Dashboard</h1>
+    <div id="dashboard-container" class="dashboard-container">
+      <p class="dashboard-heading">Your Keys</p>
+      <div id="keys-table" class="dashboard-table">
+        <div class="table-row table-header">
+          <div class="key-dashboard">Key</div>
+          <div class="status-dashboard">Status</div>
+          <div class="actions-dashboard">Actions</div>
+        </div>
+        <!-- Keys will be dynamically inserted here -->
+      </div>
+      <button id="refresh-btn" class="btn">Refresh Keys</button>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const keysTable = document.getElementById("keys-table");
+      const refreshBtn = document.getElementById("refresh-btn");
+
+      // Function to fetch and display keys
+      function fetchKeys() {
+        fetch("http://localhost:3000/getKeys")
+          .then(response => response.json())
+          .then(data => {
+            // Clear existing keys except the header
+            keysTable.innerHTML = `
+              <div class="table-row table-header">
+                <div>Key</div>
+                <div>Status</div>
+                <div>Actions</div>
+              </div>
+            `;
+
+            if (data.keys.length === 0) {
+              keysTable.innerHTML += `<div class="table-row"><div colspan="3">No keys found.</div></div>`;
+              return;
+            }
+
+            data.keys.forEach(keyObj => {
+              const row = document.createElement("div");
+              row.classList.add("table-row");
+
+              // Key Column
+              const keyDiv = document.createElement("div");
+              keyDiv.textContent = keyObj.key;
+              row.appendChild(keyDiv);
+
+              // Status Column
+              const statusDiv = document.createElement("div");
+              statusDiv.textContent = keyObj.status;
+              statusDiv.classList.add("status");
+              if (keyObj.status === "Expired") {
+                statusDiv.classList.add("expired");
+              } else {
+                statusDiv.classList.add("active");
+              }
+              row.appendChild(statusDiv);
+
+              // Actions Column
+              const actionsDiv = document.createElement("div");
+
+              // Renew Button
+              if (keyObj.status === "Expired") {
+                const renewBtn = document.createElement("button");
+                renewBtn.textContent = "Renew";
+                renewBtn.classList.add("btn", "renew");
+                renewBtn.addEventListener("click", () => renewKey(keyObj.key));
+                actionsDiv.appendChild(renewBtn);
+              }
+
+              // Delete Button
+              const deleteBtn = document.createElement("button");
+              deleteBtn.textContent = "Delete";
+              deleteBtn.classList.add("btn", "delete");
+              deleteBtn.addEventListener("click", () => deleteKey(keyObj.key));
+              actionsDiv.appendChild(deleteBtn);
+
+              row.appendChild(actionsDiv);
+
+              keysTable.appendChild(row);
+            });
+          })
+          .catch(err => {
+            console.error("Error fetching keys:", err);
+          });
+      }
+
+      // Function to renew a key
+      function renewKey(key) {
+        fetch("http://localhost:3000/renewKey", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ key })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("Key renewed successfully!");
+            fetchKeys();  // Refresh the key list
+          } else {
+            alert(data.message || "Failed to renew key.");
+          }
+        })
+        .catch(err => {
+          console.error("Error renewing key:", err);
+          alert("Failed to renew key.");
+        });
+      }
+
+      // Function to delete a key
+      function deleteKey(key) {
+        if (!confirm("Are you sure you want to delete this key?")) return;
+
+        fetch("http://localhost:3000/deleteKey", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ key })
+        })
+        .then(response => {
+          if (response.ok) {
+            fetchKeys();  // Refresh the key list
+          } else {
+            alert("Failed to delete key.");
+          }
+        })
+        .catch(err => {
+          console.error("Error deleting key:", err);
+          alert("Failed to delete key.");
+        });
+      }
+
+      // Initial fetch of keys when the page loads
+      fetchKeys();
+
+      // Refresh button functionality
+      refreshBtn.addEventListener("click", fetchKeys);
+    });
+  </script>
+</body>
+</html>
