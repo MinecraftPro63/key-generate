@@ -6,21 +6,16 @@ const cors = require("cors");
 const app = express();
 const PORT = 3000;
 
-// Middleware
-app.use(express.json());
+// Middleware to enable CORS
 app.use(cors({
-  origin: [
-    "http://127.0.0.1:5500",  // Allow requests from this origin
-    "http://localhost:3000"    // Allow requests from this origin as well
-  ],
+  origin: "https://minecraftpro63.github.io",  // Allow your GitHub Pages origin
   methods: ["GET", "POST"],
   credentials: true
 }));
-app.options("*", cors()); // Handle preflight requests
-app.use(express.static(path.join(__dirname, "public")));
 
-// Handle favicon request to avoid 404 error
-app.get('/favicon.ico', (req, res) => res.status(204));
+app.options("*", cors()); // Handle preflight requests
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 // Normalize IP address
 function getNormalizedIP(req) {

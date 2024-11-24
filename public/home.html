@@ -40,7 +40,7 @@
         .then(data => {
           if (data.success) {
             // Redirect to copy-key page with the key as a query parameter
-            window.location.href = `/public/copy-key.html?key=${data.key}`;
+            window.location.href = `/key-generate/public/copy-key.html?key=${data.key}`;
           } else {
             // Alert the user that they cannot generate a new key yet
             alert(data.message || "Failed to generate key.");
